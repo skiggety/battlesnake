@@ -29,6 +29,9 @@ class Game
     # Choose a random direction to move in
     possible_moves = %w[up down left right]
 
+    puts "=================================="
+    puts "my head is at #{my_head(board)}"
+
     possible_moves = avoid_walls(possible_moves, board)
     puts "after avoiding walls, possible_moves = #{possible_moves}"
     possible_moves = avoid_snakes(possible_moves, board)
@@ -54,6 +57,7 @@ class Game
   # TODO: TEST/DEBUG
   # avoid going into areas you can't easily fit into
   def avoid_small_areas(preferred_moves, board)
+    preferred_moves.each{ |move| puts "area accessible from move #{move} is #{area_accessible_from_move(move, board)}" }
     preferred_moves.filter{ |move| area_accessible_from_move(move, board) > minimum_needed_area(board) }
   end
 
