@@ -273,6 +273,8 @@ class Game
     end
 
     grid.draw_snake(me)
+
+    puts "Grid: #{grid.grid.inspect}"
   end
 
   def enemy_snake_data(game_data)
