@@ -23,13 +23,13 @@ def calc_move(board)
   possible_moves = avoid_long_snakes_possible_next_head_position(possible_moves, board)
   puts "after filtering, possible_moves = #{possible_moves}"
 
-  preferred_moves = determine_preferred_moves(possible_moves, board)
+  preferred_moves = head_toward_preferred_target(possible_moves, board)
   puts "preferred_moves = #{preferred_moves}"
 
   preferred_moves.sample || possible_moves.sample || 'right'
 end
 
-def determine_preferred_moves(possible_moves, board)
+def head_toward_preferred_target(possible_moves, board)
   preferred_food_move = direction_to_preferred_food(board)
   preferred_enemy_move = direction_to_preferred_enemy(board, 1)
 
