@@ -51,29 +51,29 @@ end
 
 def area_accessible_from_square(square, board)
   region = region.new(square)
+  last_region = nil
 
-  free_squares = all_free_squares(board)
   last_free_squares = []
 
   # add free squares contiguous to our growing region until we can't anymore
-  while last_free_squares != free_squares do
-    last_free_squares = free_squares
+  while last_region != region do
+    last_region = region
 
-    contiguous_free_squares = region.get_adjacent_from(free_squares)
+    contiguous_free_squares = region.get_adjacent_free_squares(board)
     region += contiguous_free_squares
-    free_squares -= contiguous_free_squares
   end
 end
 
-def all_free_squares(board)
-end
-
 class Region
-  def get_adjacent_from(squares)
+  def region.get_adjacent_free_squares(board)
     # TODO: IMPLEMENT
   end
 
   def +=(new_squares)
+    # TODO: IMPLEMENT
+  end
+
+  def ==(another_region)
     # TODO: IMPLEMENT
   end
 end
