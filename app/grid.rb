@@ -17,6 +17,7 @@ class Grid
   end
 
   def empty?(x,y)
+    puts "Grid#empty? x: #{x}, y: #{y}| empty?:#{grid[x]&.[](y) == 0 || grid[x]&.[](y) == 'f' || grid[x]&.[](y) == 't'}"
     grid[x]&.[](y) == 0 || grid[x]&.[](y) == 'f' || grid[x]&.[](y) == 't'
   end
 end
