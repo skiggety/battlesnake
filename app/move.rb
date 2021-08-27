@@ -39,16 +39,18 @@ def calc_move(board)
   preferred_moves.sample || possible_moves.sample || 'right'
 end
 
+# TODO: TEST/DEBUG
 # avoid going into areas you can't easily fit into
 def avoid_small_areas(preferred_moves, board)
   preferred_moves.filter{ |move| area_accessible_from_move(move, board) > minimum_needed_area(board) }
 end
 
+# TODO: TEST/DEBUG
 def area_accessible_from_move(move, board)
-  0 # (stub) TODO: IMPLEMENT
-  area_accessible_from_square(coordinates_for_move(move), board)
+  area_accessible_from_square(coordinates_for_move(move), my_head(board))
 end
 
+# TODO: TEST/DEBUG
 def area_accessible_from_square(square, board)
   region = region.new(square)
   last_region = nil
@@ -65,30 +67,68 @@ def area_accessible_from_square(square, board)
 end
 
 class Region
+  # TODO: TEST/DEBUG
   def initialize(first_square)
     @squares = [first_square]
   end
 
+  # TODO: TEST/DEBUG
   def get_adjacent_free_squares(board)
-    # TODO: IMPLEMENT
+    new = []
+    @squares.each do |square|
+      new += get_all_adjacent(square).filter{ |square| is_free?(square, board) }
+      new = new.sort.uniq
+    end
+    return new
   end
 
+  # TODO: TEST/DEBUG
   def +=(new_squares)
-    # TODO: IMPLEMENT
+    @squares += new_squares
   end
 
+  # TODO: TEST/DEBUG
+  def !=(another_region)
+    ! self == another_region
+  end
+
+  # TODO: TEST/DEBUG
   def ==(another_region)
+    region.squares.sort == another_region.squares.sort
+  end
+
+  def squares
+    @squares
+  end
+
+  # TODO: TEST/DEBUG
+  def get_all_adjacent(square)
+    [left_of(square), right_of(square), above(square), below(square)]
+  end
+
+  # TODO: TEST/DEBUG
+  def is_free?(square, board)
     # TODO: IMPLEMENT
   end
 end
 
-def coordinates_for_move(move)
+# TODO: TEST/DEBUG
+def coordinates_for_move(move,head)
   head = my_head(board)
-  # TODO...
+  case move
+  when 'left'
+    left_of(head)
+  when 'right'
+    right_of(head)
+  when 'up'
+    above(head)
+  when 'down'
+    below(head)
 end
 
+# TODO: TEST/DEBUG
 def minimum_needed_area(board)
-  5 # TODO: get length of own snake
+  board[:you][:length]
 end
 
 def head_toward_preferred_target(possible_moves, board)
@@ -115,7 +155,7 @@ end
 
 def direction_to_preferred_enemy(board, hunt_advantage)
   my_head = board[:you][:head]
-  my_length = board[:you][:body].length
+  my_length = board[:you][:body][:length]
   smaller_snake_heads = other_snakes(board).filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
   return nil if smaller_snake_heads.empty?
 
@@ -211,7 +251,7 @@ end
 
 def avoid_long_snakes_possible_next_head_position(possible_moves, board)
   my_head = board[:you][:head]
-  my_length = board[:you][:body].length
+  my_length = board[:you].length
   puts "my_length = #{my_length}"
   # only avoid snakes at least as long as me:
   long_snakes_heads = other_snakes(board).filter{ |s| s[:body].length >= my_length}.map{ |s| s[:head] }
