@@ -33,7 +33,7 @@ def determine_preferred_moves(possible_moves, board)
   preferred_food_move = direction_to_preferred_food(board)
   preferred_enemy_move = direction_to_preferred_enemy(board, 1)
 
-  preferred_move = preferred_food_move || preferred_enemy_move
+  preferred_move =  preferred_enemy_move || preferred_food_move
 
   possible_moves & preferred_move
 end
