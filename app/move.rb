@@ -33,7 +33,11 @@ def determine_preferred_moves(possible_moves, board)
   preferred_food_move = direction_to_preferred_food(board)
   preferred_enemy_move = direction_to_preferred_enemy(board, 1)
 
-  preferred_move =  preferred_enemy_move || preferred_food_move
+  preferred_move = if seek_food?(board)
+                     preferred_food_move
+                   else
+                     preferred_enemy_move || preferred_food_move
+                   end
 
   possible_moves & preferred_move
 end
@@ -54,6 +58,28 @@ def direction_to_preferred_enemy(board, hunt_advantage)
   return nil if smaller_snake_heads.empty?
 
   directions_towards(nearest_to(smaller_snake_heads, my_head), my_head)
+end
+
+def seek_food?(board)
+  return false if board[:board][:food].empty?
+
+  my_health = board[:you][:health]
+
+  (my_health < board[:board][:height] || my_health < board[:board][:width]) || i_am_not_the_largest_snake?(board)
+end
+
+def i_am_the_largest_snake?(board)
+  my_length = board[:you][:body].length
+
+  other_snakes(board).each do |snake|
+    return false if snake[:body].length >= my_length
+  end
+
+  true
+end
+
+def i_am_not_the_largest_snake?(board)
+  !i_am_the_largest_snake?(board)
 end
 
 def nearest_to(squares, start)
