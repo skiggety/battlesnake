@@ -13,7 +13,7 @@ class Region
   def get_adjacent_free_squares(board)
     new_squares = SortedSet[]
     @squares.each do |square|
-      filtered = get_all_adjacent(square).filter{ |square| is_free?(square, board) }
+      filtered = get_all_adjacent(square).filter{ |square| is_free?(square) }
       new_squares += SortedSet.new(filtered)
     end
     new_squares
