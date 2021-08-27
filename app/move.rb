@@ -1,4 +1,5 @@
 require 'yaml'
+require 'set'
 
 ## CONFIGURATION
 ## ======================================
@@ -69,17 +70,17 @@ end
 class Region
   # TODO: TEST/DEBUG
   def initialize(first_square)
-    @squares = [first_square]
+    @squares = SortedSet[first_square]
   end
 
   # TODO: TEST/DEBUG
   def get_adjacent_free_squares(board)
-    new = []
+    new_squares = SortedSet[]
     @squares.each do |square|
-      new += get_all_adjacent(square).filter{ |square| is_free?(square, board) }
-      new = new.sort.uniq
+      filtered = get_all_adjacent(square).filter{ |square| is_free?(square, board) }
+      new_squares += SortedSet.new(filtered)
     end
-    return new
+    new_squares
   end
 
   # TODO: TEST/DEBUG
@@ -94,16 +95,14 @@ class Region
 
   # TODO: TEST/DEBUG
   def ==(another_region)
-    region.squares.sort == another_region.squares.sort
+    region.squares == another_region.squares
   end
 
-  def squares
-    @squares
-  end
+  attr_accessor :squares
 
   # TODO: TEST/DEBUG
   def get_all_adjacent(square)
-    [left_of(square), right_of(square), above(square), below(square)]
+    [left_of(square), right_of(square), above(square), below(square)].to_set
   end
 
   # TODO: TEST/DEBUG
@@ -124,6 +123,7 @@ def coordinates_for_move(move,head)
     above(head)
   when 'down'
     below(head)
+  end
 end
 
 # TODO: TEST/DEBUG
