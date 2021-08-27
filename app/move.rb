@@ -35,7 +35,7 @@ def head_towards_nearest_target(possible_moves, board)
   possible_moves & towards_target
 end
 
-ADVANTAGE = 1 # should be at least 0
+ADVANTAGE = 3 # should be at least 0
 def preferred_target(board)
   my_head = board[:you][:head]
   all_food = board[:board][:food]
