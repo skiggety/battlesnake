@@ -38,10 +38,10 @@ class Game
     puts "after avoiding snakes, possible_moves = #{possible_moves}"
 
     # TODO: strongly prefer to avoid these, but it's still better than a wall: (see game at https://play.battlesnake.com/g/04f4da39-8324-4043-81f6-77a354a48aac/ )
-    possible_moves = avoid_long_snakes_possible_next_head_position(possible_moves, board)
+    safe_moves = avoid_long_snakes_possible_next_head_position(possible_moves, board)
     puts "after filtering, possible_moves = #{possible_moves}"
 
-    preferred_moves = possible_moves
+    preferred_moves = safe_moves
 
     preferred_moves = avoid_small_areas(preferred_moves, board)
     puts "after considering area, preferred_moves = #{preferred_moves}"
@@ -49,7 +49,7 @@ class Game
     preferred_moves = head_toward_preferred_target(preferred_moves, board)
     puts "after considering targets, preferred_moves = #{preferred_moves}"
 
-    preferred_moves.sample || possible_moves.sample || 'right'
+    preferred_moves.sample || safe_moves.sample || possible_moves.sample || 'right'
   end
 
   private
