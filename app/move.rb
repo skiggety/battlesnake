@@ -1,5 +1,11 @@
 require 'yaml'
 
+## CONFIGURATION
+## ======================================
+HUNT_ADVANTAGE = 1
+## ======================================
+
+
 # This function is called on every turn of a game. It's how your Battlesnake decides where to move.
 # Valid moves are "up", "down", "left", or "right".
 # TODO: Use the information in board to decide your next move.
@@ -31,7 +37,7 @@ end
 
 def head_toward_preferred_target(possible_moves, board)
   preferred_food_move = direction_to_preferred_food(board)
-  preferred_enemy_move = direction_to_preferred_enemy(board, 1)
+  preferred_enemy_move = direction_to_preferred_enemy(board, HUNT_ADVANTAGE)
 
   preferred_move = if seek_food?(board)
                      preferred_food_move
