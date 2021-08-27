@@ -84,10 +84,10 @@ def seek_food?(board)
 
   my_health = board[:you][:health]
 
-  (my_health < board[:board][:height] || my_health < board[:board][:width]) || !i_am_largest_snake?(board)
+  (my_health < board[:board][:height] || my_health < board[:board][:width]) || i_am_not_the_largest_snake?(board)
 end
 
-def i_am_largest_snake?(board)
+def i_am_the_largest_snake?(board)
   my_length = board[:you][:body].length
 
   other_snakes(board).each do |snake|
@@ -95,6 +95,10 @@ def i_am_largest_snake?(board)
   end
 
   true
+end
+
+def i_am_not_the_largest_snake?(board)
+  !i_am_the_largest_snake?(board)
 end
 
 def nearest_to(squares, start)
