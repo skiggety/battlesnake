@@ -41,7 +41,50 @@ end
 
 # avoid going into areas you can't easily fit into
 def avoid_small_areas(preferred_moves, board)
-  preferred_moves # TODO: IMPLEMENT (this is a no-op for now)
+  preferred_moves.filter{ |move| area_accessible_from_move(move, board) > minimum_needed_area(board) }
+end
+
+def area_accessible_from_move(move, board)
+  0 # (stub) TODO: IMPLEMENT
+  area_accessible_from_square(coordinates_for_move(move), board)
+end
+
+def area_accessible_from_square(square, board)
+  region = region.new(square)
+
+  free_squares = all_free_squares(board)
+  last_free_squares = []
+
+  # add free squares contiguous to our growing region until we can't anymore
+  while last_free_squares != free_squares do
+    last_free_squares = free_squares
+
+    contiguous_free_squares = region.get_adjacent_from(free_squares)
+    region += contiguous_free_squares
+    free_squares -= contiguous_free_squares
+  end
+end
+
+def all_free_squares(board)
+end
+
+class Region
+  def get_adjacent_from(squares)
+    # TODO: IMPLEMENT
+  end
+
+  def +=(new_squares)
+    # TODO: IMPLEMENT
+  end
+end
+
+def coordinates_for_move(move)
+  head = my_head(board)
+  # TODO...
+end
+
+def minimum_needed_area(board)
+  5 # TODO: get length of own snake
 end
 
 def head_toward_preferred_target(possible_moves, board)
@@ -117,15 +160,19 @@ def directions_towards(target, start)
 end
 
 def avoid_walls(possible_moves, board)
-  my_head = board[:you][:head]
+  head = my_head(board)
   # puts "my_head:"
   # puts my_head
 
-  possible_moves.delete('left') if my_head[:x] == 0
-  possible_moves.delete('down') if my_head[:y] == 0
-  possible_moves.delete('right') if my_head[:x] == max_x(board)
-  possible_moves.delete('up') if my_head[:y] == max_y(board)
+  possible_moves.delete('left') if head[:x] == 0
+  possible_moves.delete('down') if head[:y] == 0
+  possible_moves.delete('right') if head[:x] == max_x(board)
+  possible_moves.delete('up') if head[:y] == max_y(board)
   possible_moves
+end
+
+def my_head(board)
+  board[:you][:head]
 end
 
 def max_x(board)
