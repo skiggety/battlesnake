@@ -63,7 +63,7 @@ class Game
 
   # TODO: TEST/DEBUG
   def area_accessible_from_square(square, board)
-    region = Region.new(square)
+    region = Region.new(square, grid)
     last_region = nil
 
     # add free squares contiguous to our growing region until we can't anymore

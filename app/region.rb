@@ -1,8 +1,11 @@
 require 'set'
 
 class Region
+  attr_accessor :grid
+
   # TODO: TEST/DEBUG
-  def initialize(first_square)
+  def initialize(first_square, grid)
+    @grid = grid
     @squares = SortedSet[first_square]
   end
 
@@ -40,8 +43,8 @@ class Region
   end
 
   # TODO: TEST/DEBUG
-  def is_free?(square, board)
-    # TODO: IMPLEMENT
+  def is_free?(square)
+    grid.empty?(square[:x], square[:y])
   end
 
   def size

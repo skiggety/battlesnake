@@ -17,6 +17,6 @@ class Grid
   end
 
   def empty?(x,y)
-    grid[x]&.[](y) == 0 || grid[x]&.[](y) == 'f'
+    grid[x]&.[](y) == 0 || grid[x]&.[](y) == 'f' || grid[x]&.[](y) == 't'
   end
 end
