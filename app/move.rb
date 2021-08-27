@@ -53,7 +53,7 @@ end
 
 # TODO: TEST/DEBUG
 def area_accessible_from_square(square, board)
-  region = region.new(square)
+  region = Region.new(square)
   last_region = nil
 
   last_free_squares = []
@@ -84,8 +84,9 @@ class Region
   end
 
   # TODO: TEST/DEBUG
-  def +=(new_squares)
-    @squares += new_squares
+  def + (new_squares)
+    @squares + new_squares
+    self
   end
 
   # TODO: TEST/DEBUG
@@ -113,7 +114,6 @@ end
 
 # TODO: TEST/DEBUG
 def coordinates_for_move(move,head)
-  head = my_head(board)
   case move
   when 'left'
     left_of(head)
