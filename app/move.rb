@@ -17,4 +17,3 @@ def move(board)
   puts ''
   { "move": move }
 end
-

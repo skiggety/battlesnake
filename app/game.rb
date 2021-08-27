@@ -1,6 +1,7 @@
 require_relative './snake'
 require_relative './food'
 require_relative './grid'
+require_relative './region'
 
 class Game
   attr_accessor :height, :width, :me, :snakes, :food, :grid, :board
@@ -55,15 +56,15 @@ class Game
 
   # TODO: TEST/DEBUG
   def area_accessible_from_move(move, board)
-    area_accessible_from_square(coordinates_for_move(move), my_head(board))
+    result = area_accessible_from_square(coordinates_for_move(move, my_head(board)), board)
+    puts "result is \"#{result}\" ."
+    result
   end
 
   # TODO: TEST/DEBUG
   def area_accessible_from_square(square, board)
-    region = region.new(square)
+    region = Region.new(square)
     last_region = nil
-
-    last_free_squares = []
 
     # add free squares contiguous to our growing region until we can't anymore
     while last_region != region do
@@ -72,57 +73,12 @@ class Game
       contiguous_free_squares = region.get_adjacent_free_squares(board)
       region += contiguous_free_squares
     end
-  end
 
-  class Region
-    # TODO: TEST/DEBUG
-    def initialize(first_square)
-      @squares = [first_square]
-    end
-
-    # TODO: TEST/DEBUG
-    def get_adjacent_free_squares(board)
-      new = []
-      @squares.each do |square|
-        new += get_all_adjacent(square).filter{ |square| is_free?(square, board) }
-        new = new.sort.uniq
-      end
-      return new
-    end
-
-    # TODO: TEST/DEBUG
-    def +(new_squares)
-      @squares += new_squares
-    end
-
-    # TODO: TEST/DEBUG
-    def !=(another_region)
-      ! self == another_region
-    end
-
-    # TODO: TEST/DEBUG
-    def ==(another_region)
-      region.squares.sort == another_region.squares.sort
-    end
-
-    def squares
-      @squares
-    end
-
-    # TODO: TEST/DEBUG
-    def get_all_adjacent(square)
-      [left_of(square), right_of(square), above(square), below(square)]
-    end
-
-    # TODO: TEST/DEBUG
-    def is_free?(square, board)
-      # TODO: IMPLEMENT
-    end
+    region.size
   end
 
   # TODO: TEST/DEBUG
-  def coordinates_for_move(move, head)
-    head = my_head(board)
+  def coordinates_for_move(move,head)
     case move
     when 'left'
       left_of(head)
@@ -164,7 +120,7 @@ class Game
 
   def direction_to_preferred_enemy(board, hunt_advantage)
     my_head = board[:you][:head]
-    my_length = board[:you][:body][:length]
+    my_length = board[:you][:length]
     smaller_snake_heads = other_snakes(board).filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
     return nil if smaller_snake_heads.empty?
 
@@ -179,6 +135,7 @@ class Game
     (my_health < board[:board][:height] || my_health < board[:board][:width]) || i_am_not_the_largest_snake?(board)
   end
 
+  # TODO: cleanup instances of .length
   def i_am_the_largest_snake?(board)
     my_length = board[:you][:body].length
 
