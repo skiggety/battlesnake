@@ -54,7 +54,7 @@ end
 def direction_to_preferred_enemy(board, hunt_advantage)
   my_head = board[:you][:head]
   my_length = board[:you][:body].length
-  smaller_snake_heads = board[:board][:snakes].filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
+  smaller_snake_heads = other_snakes(board).filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
   return nil if smaller_snake_heads.empty?
 
   directions_towards(nearest_to(smaller_snake_heads, my_head), my_head)
