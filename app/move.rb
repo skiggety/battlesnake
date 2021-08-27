@@ -65,6 +65,10 @@ def area_accessible_from_square(square, board)
 end
 
 class Region
+  def initialize(first_square)
+    @squares = [first_square]
+  end
+
   def get_adjacent_free_squares(board)
     # TODO: IMPLEMENT
   end
