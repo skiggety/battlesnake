@@ -217,7 +217,7 @@ class Game
 
   def avoid_long_snakes_possible_next_head_position(possible_moves, board)
     my_head = board[:you][:head]
-    my_length = board[:you].length
+    my_length = board[:you][:length]
     puts "my_length = #{my_length}"
     # only avoid snakes at least as long as me:
     long_snakes_heads = other_snakes(board).filter{ |s| s[:body].length >= my_length}.map{ |s| s[:head] }
