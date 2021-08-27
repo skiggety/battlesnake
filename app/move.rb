@@ -1,5 +1,11 @@
 require 'yaml'
 
+## CONFIGURATION
+## ======================================
+HUNT_ADVANTAGE = 1
+## ======================================
+
+
 # This function is called on every turn of a game. It's how your Battlesnake decides where to move.
 # Valid moves are "up", "down", "left", or "right".
 # TODO: Use the information in board to decide your next move.
@@ -27,7 +33,7 @@ def calc_move(board)
 
   preferred_moves = avoid_small_areas(preferred_moves, board)
   puts "after considering area, preferred_moves = #{preferred_moves}"
-  preferred_moves = head_towards_nearest_target(preferred_moves, board)
+  preferred_moves = head_toward_preferred_target(preferred_moves, board)
   puts "after considering targets, preferred_moves = #{preferred_moves}"
 
   preferred_moves.sample || possible_moves.sample || 'right'
@@ -38,33 +44,35 @@ def avoid_small_areas(preferred_moves, board)
   preferred_moves # TODO: IMPLEMENT (this is a no-op for now)
 end
 
-def head_towards_nearest_target(possible_moves, board)
-  my_head = board[:you][:head]
-  towards_target = directions_towards(preferred_target(board),my_head)
-  possible_moves & towards_target
+def head_toward_preferred_target(possible_moves, board)
+  preferred_food_move = direction_to_preferred_food(board)
+  preferred_enemy_move = direction_to_preferred_enemy(board, HUNT_ADVANTAGE)
+
+  preferred_move = if seek_food?(board)
+                     preferred_food_move
+                   else
+                     preferred_enemy_move || preferred_food_move
+                   end
+
+  possible_moves & preferred_move
 end
 
-ADVANTAGE = 3 # should be at least 0
-def preferred_target(board)
+def direction_to_preferred_food(board)
   my_head = board[:you][:head]
   all_food = board[:board][:food]
-  puts "In preferred_target(board), all_food is #{all_food}"
+
+  return nil if all_food.empty?
+
+  directions_towards(nearest_to(all_food, my_head), my_head)
+end
+
+def direction_to_preferred_enemy(board, hunt_advantage)
+  my_head = board[:you][:head]
   my_length = board[:you][:body].length
-  smaller_snake_heads = board[:board][:snakes].filter{ |s| s[:body].length < (my_length - ADVANTAGE) }.map{ |s| s[:head] }
-  puts "In preferred_target(board), smaller_snake_heads is #{smaller_snake_heads}"
+  smaller_snake_heads = other_snakes(board).filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
+  return nil if smaller_snake_heads.empty?
 
-  return nearest_to(smaller_snake_heads, my_head) unless smaller_snake_heads.empty?
-
-  if seek_food?(board)
-    puts "SEEKING FOOD, I am length #{board[:you][:length]}"
-    return nearest_to(all_food, my_head)
-  else
-    all_targets -= all_food
-    puts "SKIPPING FOOD, I am length #{board[:you][:length]}"
-  end
-
-  puts "I SHOULD NOT GET HERE UNLESS THERE ARE NO VIABLE TARGETS (RARE)"
-  {x: 2, y: 2} # TODO: maybe introduce a random_target?
+  directions_towards(nearest_to(smaller_snake_heads, my_head), my_head)
 end
 
 def seek_food?(board)
