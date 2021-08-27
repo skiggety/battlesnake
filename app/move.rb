@@ -34,6 +34,7 @@ def calc_move(board)
 
   preferred_moves = avoid_small_areas(preferred_moves, board)
   puts "after considering area, preferred_moves = #{preferred_moves}"
+  preferred_moves = possible_moves if preferred_moves == []
   preferred_moves = head_toward_preferred_target(preferred_moves, board)
   puts "after considering targets, preferred_moves = #{preferred_moves}"
 
@@ -48,15 +49,15 @@ end
 
 # TODO: TEST/DEBUG
 def area_accessible_from_move(move, board)
-  area_accessible_from_square(coordinates_for_move(move), my_head(board))
+  result = area_accessible_from_square(coordinates_for_move(move, my_head(board)), board)
+  puts "result is \"#{result}\" ."
+  result
 end
 
 # TODO: TEST/DEBUG
 def area_accessible_from_square(square, board)
   region = Region.new(square)
   last_region = nil
-
-  last_free_squares = []
 
   # add free squares contiguous to our growing region until we can't anymore
   while last_region != region do
@@ -65,6 +66,8 @@ def area_accessible_from_square(square, board)
     contiguous_free_squares = region.get_adjacent_free_squares(board)
     region += contiguous_free_squares
   end
+
+  region.size
 end
 
 class Region
@@ -109,6 +112,10 @@ class Region
   # TODO: TEST/DEBUG
   def is_free?(square, board)
     # TODO: IMPLEMENT
+  end
+
+  def size
+    @squares.size
   end
 end
 
@@ -155,7 +162,7 @@ end
 
 def direction_to_preferred_enemy(board, hunt_advantage)
   my_head = board[:you][:head]
-  my_length = board[:you][:body][:length]
+  my_length = board[:you][:length]
   smaller_snake_heads = other_snakes(board).filter{ |s| s[:body].length < (my_length - hunt_advantage) }.map{ |s| s[:head] }
   return nil if smaller_snake_heads.empty?
 
@@ -170,6 +177,7 @@ def seek_food?(board)
   (my_health < board[:board][:height] || my_health < board[:board][:width]) || i_am_not_the_largest_snake?(board)
 end
 
+# TODO: cleanup instances of .length
 def i_am_the_largest_snake?(board)
   my_length = board[:you][:body].length
 
