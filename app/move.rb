@@ -23,10 +23,19 @@ def calc_move(board)
   possible_moves = avoid_long_snakes_possible_next_head_position(possible_moves, board)
   puts "after filtering, possible_moves = #{possible_moves}"
 
-  preferred_moves = head_towards_nearest_target(possible_moves, board)
-  puts "preferred_moves = #{preferred_moves}"
+  preferred_moves = possible_moves
+
+  preferred_moves = avoid_small_areas(preferred_moves, board)
+  puts "after considering area, preferred_moves = #{preferred_moves}"
+  preferred_moves = head_towards_nearest_target(preferred_moves, board)
+  puts "after considering targets, preferred_moves = #{preferred_moves}"
 
   preferred_moves.sample || possible_moves.sample || 'right'
+end
+
+# avoid going into areas you can't easily fit into
+def avoid_small_areas(preferred_moves, board)
+  preferred_moves # TODO: IMPLEMENT (this is a no-op for now)
 end
 
 def head_towards_nearest_target(possible_moves, board)
