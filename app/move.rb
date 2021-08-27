@@ -59,7 +59,15 @@ def preferred_target(board)
   puts "In preferred_target(board), all_targets is #{all_targets}"
 
   return nearest_to(smaller_snake_heads, my_head) unless smaller_snake_heads.empty?
-  return nearest_to(all_food, my_head) unless all_food.empty?
+
+  if seek_food?(board)
+    puts "SEEKING FOOD, I am length #{board[:you][:length]}"
+    return nearest_to(all_food, my_head)
+  else
+    all_targets -= all_food
+    puts "SKIPPING FOOD, I am length #{board[:you][:length]}"
+  end
+
   puts "I SHOULD NOT GET HERE UNLESS THERE ARE NO VIABLE TARGETS (RARE)"
   chosen = if all_targets&.empty?
               {x: 2, y: 2} # TODO: maybe introduce a random_target?
@@ -69,6 +77,24 @@ def preferred_target(board)
   puts "In preferred_target(board), my_head is #{my_head}"
   puts "In preferred_target(board), chosen is #{chosen}"
   return chosen
+end
+
+def seek_food?(board)
+  return false if board[:board][:food].empty?
+
+  my_health = board[:you][:health]
+
+  (my_health < board[:board][:height] || my_health < board[:board][:width]) || !i_am_largest_snake?(board)
+end
+
+def i_am_largest_snake?(board)
+  my_length = board[:you][:body].length
+
+  other_snakes(board).each do |snake|
+    return false if snake[:body].length >= my_length
+  end
+
+  true
 end
 
 def nearest_to(squares, start)
